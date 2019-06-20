@@ -20,8 +20,16 @@ public class NewMain {
 
 public static void main(String[] args) throws FileNotFoundException,IOException, InterruptedException, ExecutionException
 {
+	System.out.println("Me acabas de pasar " + args.length + " parametros");
+	System.out.println("Parametro 1 " +	args[0] );
+	System.out.println("Parametro 2 " +	args[1] );
+	
+    String inputNombreArchivo = args[0];
+    String outputNombreArchivo = args[1];
+     
+	
     ByteArrayOutputStream bo = new ByteArrayOutputStream();
-    InputStream in = new BufferedInputStream(new FileInputStream(System.getProperty("user.dir") + File.separator +"demow.rtf"));
+    InputStream in = new BufferedInputStream(new FileInputStream(System.getProperty("user.dir") + File.separator + inputNombreArchivo));
     IConverter converter = LocalConverter.builder()
             .baseFolder(new File(System.getProperty("user.dir") + File.separator +"test"))
             .workerPool(20, 25, 2, TimeUnit.SECONDS)
@@ -35,9 +43,18 @@ public static void main(String[] args) throws FileNotFoundException,IOException,
             .schedule();
     conversion.get();
 
-    OutputStream outputStream = new FileOutputStream("out.pdf");
-    bo.writeTo(outputStream);      		
-    in.close();
-    bo.close();
+    try{          
+    	 OutputStream outputStream = new FileOutputStream(outputNombreArchivo+".pdf");
+    	    bo.writeTo(outputStream);      		
+    	    in.close();
+    	    bo.close();        
+    }
+    catch ( ArrayIndexOutOfBoundsException e )
+    {            
+        //si no existen parametros muestra error y termina programa
+       // JOptionPane.showMessageDialog(null,"Error: No se pasaron argumentos. Necesita 2");
+        //System.exit(0);
+    }
+   
 }
 }
